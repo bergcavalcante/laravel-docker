@@ -3,7 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Building;
-use App\Models\Comment;
+use App\Models\TaskComment;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -178,7 +178,7 @@ class TaskControllerTest extends TestCase
 
         $building = Building::factory()->create();
         $task = Task::factory()->create(['building_id' => $building->id]);
-        Comment::factory()->count(2)->create(['task_id' => $task->id]);
+        TaskComment::factory()->count(2)->create(['task_id' => $task->id]);
 
         $response = $this->getJson("/api/buildings/{$building->id}/tasks");
 

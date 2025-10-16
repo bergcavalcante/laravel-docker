@@ -2,7 +2,8 @@
 
 namespace Tests\Unit\Services;
 
-use App\Models\Comment;
+use App\Http\Requests\CreateCommentRequest;
+use App\Models\TaskComment;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\StoreCommentService;
@@ -37,15 +38,18 @@ class StoreCommentServiceTest extends TestCase
             'content' => 'This is a test comment',
         ];
 
-        $comment = $this->storeCommentService->execute($commentData);
+        $request = $this->mock(CreateCommentRequest::class);
+        $request->shouldReceive('validated')->andReturn($commentData);
 
-        $this->assertInstanceOf(Comment::class, $comment);
+        $comment = $this->storeCommentService->execute($request);
+
+        $this->assertInstanceOf(TaskComment::class, $comment);
         $this->assertEquals('This is a test comment', $comment->content);
-        $this->assertEquals($user->id, $comment->user_id);
+        $this->assertEquals($user->id, $comment->created_by);
         $this->assertEquals($task->id, $comment->task_id);
-        $this->assertDatabaseHas('comments', [
+        $this->assertDatabaseHas('task_comments', [
             'content' => 'This is a test comment',
-            'user_id' => $user->id,
+            'created_by' => $user->id,
             'task_id' => $task->id,
         ]);
     }

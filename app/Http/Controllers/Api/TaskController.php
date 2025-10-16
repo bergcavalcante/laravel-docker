@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\TaskFilterRequest;
 use App\Http\Resources\TaskResource;
+use App\Models\Building;
 use App\Services\GetTasksForBuildingService;
 use App\Services\StoreTaskService;
 use Illuminate\Http\JsonResponse;
@@ -32,13 +33,13 @@ class TaskController extends Controller
      * and user information. Supports multiple filter options such as status, assigned user,
      * and date ranges.
      *
-     * @param int $buildingId The ID of the building
+     * @param Building $building The ID of the building
      * @param TaskFilterRequest $request The validated filter request
      * @return AnonymousResourceCollection Collection of task resources
      */
-    public function index(int $buildingId, TaskFilterRequest $request): AnonymousResourceCollection
+    public function index(Building $building, TaskFilterRequest $request)
     {
-        $tasks = $this->getTasksForBuildingService->execute($buildingId, $request->validated());
+        $tasks = $this->getTasksForBuildingService->execute($building, $request);
 
         return TaskResource::collection($tasks);
     }
@@ -54,7 +55,7 @@ class TaskController extends Controller
      */
     public function store(CreateTaskRequest $request): JsonResponse
     {
-        $task = $this->storeTaskService->execute($request->validated());
+        $task = $this->storeTaskService->execute($request);
 
         return (new TaskResource($task))
             ->response()

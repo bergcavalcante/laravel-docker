@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Comment extends Model
+class TaskComment extends Model
 {
     use HasFactory;
 
@@ -17,7 +17,7 @@ class Comment extends Model
      */
     protected $fillable = [
         'task_id',
-        'user_id',
+        'created_by',
         'content',
     ];
 
@@ -38,6 +38,6 @@ class Comment extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

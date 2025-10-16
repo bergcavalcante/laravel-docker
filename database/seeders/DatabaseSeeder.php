@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Building;
-use App\Models\Comment;
+use App\Models\TaskComment;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -97,30 +97,30 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create comments for tasks
-        Comment::factory()->create([
+        TaskComment::factory()->create([
             'task_id' => $task1->id,
-            'user_id' => $teamMember1->id,
+            'created_by' => $teamMember1->id,
             'content' => 'I have assessed the damage and ordered the replacement window.',
         ]);
 
-        Comment::factory()->create([
+        TaskComment::factory()->create([
             'task_id' => $task1->id,
-            'user_id' => $owner->id,
+            'created_by' => $owner->id,
             'content' => 'Great! Please keep me updated on the delivery date.',
         ]);
 
-        Comment::factory()->create([
+        TaskComment::factory()->create([
             'task_id' => $task2->id,
-            'user_id' => $teamMember2->id,
+            'created_by' => $teamMember2->id,
             'content' => 'Started inspection. Found a loose cable that needs replacement.',
         ]);
 
         // Create random comments for other tasks
         Task::all()->each(function ($task) use ($owner, $teamMember1, $teamMember2) {
             if (rand(0, 1)) {
-                Comment::factory()->count(rand(1, 3))->create([
+                TaskComment::factory()->count(rand(1, 3))->create([
                     'task_id' => $task->id,
-                    'user_id' => collect([$owner, $teamMember1, $teamMember2])->random()->id,
+                    'created_by' => collect([$owner, $teamMember1, $teamMember2])->random()->id,
                 ]);
             }
         });

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Http\Requests\CreateTaskRequest;
 use App\Models\Building;
 use App\Models\Task;
 use App\Models\User;
@@ -39,7 +40,10 @@ class StoreTaskServiceTest extends TestCase
             'status' => 'open',
         ];
 
-        $task = $this->storeTaskService->execute($taskData);
+        $request = $this->mock(CreateTaskRequest::class);
+        $request->shouldReceive('validated')->andReturn($taskData);
+
+        $task = $this->storeTaskService->execute($request);
 
         $this->assertInstanceOf(Task::class, $task);
         $this->assertEquals('Test Task', $task->title);

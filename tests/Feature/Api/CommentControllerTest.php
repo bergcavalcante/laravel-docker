@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\Comment;
+use App\Models\TaskComment;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,9 +32,9 @@ class CommentControllerTest extends TestCase
             ->assertJsonPath('data.content', 'This is a test comment')
             ->assertJsonPath('data.task_id', $task->id);
 
-        $this->assertDatabaseHas('comments', [
+        $this->assertDatabaseHas('task_comments', [
             'task_id' => $task->id,
-            'user_id' => $user->id,
+            'created_by' => $user->id,
             'content' => 'This is a test comment',
         ]);
     }

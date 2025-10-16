@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Comment;
+use App\Http\Requests\CreateCommentRequest;
+use App\Models\TaskComment;
 use Illuminate\Support\Facades\Auth;
 
 class StoreCommentService
@@ -10,14 +11,15 @@ class StoreCommentService
     /**
      * Execute the service to create a new comment for a task.
      *
-     * @param array<string, mixed> $data
-     * @return Comment
+     * @param CreateCommentRequest $request
+     * @return TaskComment
      */
-    public function execute(array $data): Comment
+    public function execute(CreateCommentRequest $request): TaskComment
     {
-        $data['user_id'] = Auth::id();
-
-        return Comment::create($data);
+        return TaskComment::create([
+            ...$request->validated(),
+            'created_by' => Auth::id()
+        ]);
     }
 }
 

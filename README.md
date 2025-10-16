@@ -300,6 +300,64 @@ Content-Type: application/json
 
 ### Comment Endpoints
 
+#### List Task Comments
+
+```http
+GET /api/tasks/{task_id}/comments
+Authorization: Bearer {token}
+```
+
+Retrieves paginated comments for a specific task, ordered by most recent first.
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "id": 3,
+      "task_id": 1,
+      "content": "Latest update on this task",
+      "user": {
+        "id": 2,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "role": "team_member"
+      },
+      "created_at": "2025-10-15T10:00:00+00:00",
+      "updated_at": "2025-10-15T10:00:00+00:00"
+    },
+    {
+      "id": 2,
+      "task_id": 1,
+      "content": "Previous comment",
+      "user": {
+        "id": 3,
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "role": "team_member"
+      },
+      "created_at": "2025-10-14T15:30:00+00:00",
+      "updated_at": "2025-10-14T15:30:00+00:00"
+    }
+  ],
+  "links": {
+    "first": "http://localhost:8000/api/tasks/1/comments?page=1",
+    "last": "http://localhost:8000/api/tasks/1/comments?page=2",
+    "prev": null,
+    "next": "http://localhost:8000/api/tasks/1/comments?page=2"
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 2,
+    "path": "http://localhost:8000/api/tasks/1/comments",
+    "per_page": 15,
+    "to": 15,
+    "total": 20
+  }
+}
+```
+
 #### Create Comment
 
 ```http
@@ -405,10 +463,10 @@ docker-compose exec app ./vendor/bin/phpcbf
 - `timestamps`
 - Indexes on: `(building_id, status)`, `(assigned_to, created_at)`
 
-### Comments Table
+### Task Comments Table
 - `id` - Primary key
 - `task_id` - Foreign key to tasks
-- `user_id` - Foreign key to users
+- `created_by` - Foreign key to users
 - `content` - Comment text
 - `timestamps`
 - Index on: `task_id`
@@ -443,7 +501,7 @@ docker-compose exec app ./vendor/bin/phpcbf
 ## Architecture & Design Patterns
 
 ### Service Layer Pattern
-Business logic is separated into service classes (`TaskService`, `CommentService`) to keep controllers thin and promote reusability.
+Business logic is separated into service classes (`GetTasksForBuildingService`, `GetTaskCommentsService`, `StoreTaskService`, `StoreCommentService`) to keep controllers thin and promote reusability.
 
 ### Repository Pattern
 Models use Eloquent ORM with proper relationships, acting as a data access layer.
